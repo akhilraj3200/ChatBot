@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agent-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    # Uncomment the following for interactive terminal
+    # stdin_open: true
+    # tty: true
+    # Override the default command if needed
+    # command: python your_script.py
+
+# Optional: Add additional services as needed
+# services:
+#   database:
+#     image: postgres:15
+#     environment:
+#       POSTGRES_DB: mydb
+#       POSTGRES_USER: user
+#       POSTGRES_PASSWORD: password
+#     ports:
+#       - "5432:5432"
