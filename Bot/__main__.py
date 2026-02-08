@@ -31,9 +31,9 @@ extractor = DSPyProductCatalog()
 
 # extractor = dspy.Predict(DSPyProductCatalog)
 result = extractor(
-    user_request="product_list"
+    user_request="fetch product with procuct id ELX-DRG-VIT"
 )
 
 # result = agent(user_request="product_list")
 
-print(result.item_code)
+print(result)

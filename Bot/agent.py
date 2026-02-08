@@ -1,5 +1,5 @@
 import dspy
-from tools import fetch_category_info,fetch_product_info
+from tools import fetch_category_info,fetch_product_info, fetch_product_info_by_product_id
 
 
 
@@ -23,9 +23,14 @@ class SubCategoryOut(dspy.Signature):
 
 
 class ProductOut(dspy.Signature):
-    item_name: str = dspy.InputField()
+    user_request: str = dspy.InputField()
+    item_name: str = dspy.OutputField()
     item_code: str = dspy.OutputField()
 
+class ProductOutById(dspy.Signature):
+    user_request: str = dspy.InputField()
+    item_name: str = dspy.OutputField()
+    item_code: str = dspy.OutputField()
 
 class SKUOut(dspy.Signature):
     user_request: str = dspy.InputField()
@@ -40,7 +45,7 @@ class CatalogRouter(dspy.Signature):
 
     user_request: str = dspy.InputField()
     entity_type: str = dspy.OutputField(
-        desc="One of: category, subcategory, product, sku"
+        desc="One of: category, subcategory, product, sku, product_by_id"
     )
 
 # class DSPyProductCatalog(dspy.Signature):
@@ -75,7 +80,14 @@ class DSPyProductCatalog(dspy.Module):
         self.product = dspy.ReAct(
             ProductOut,
             tools=[
-                fetch_product_info
+                fetch_product_info,
+            ],
+            max_iters=5
+        )
+        self.product_by_id = dspy.ReAct(
+            ProductOutById,
+            tools=[
+                fetch_product_info_by_product_id
             ],
             max_iters=5
         )
@@ -106,5 +118,7 @@ class DSPyProductCatalog(dspy.Module):
 
         if route == "sku":
             return self.sku(user_request=user_request)
+        if route == "product_by_id":
+            return self.product_by_id(user_request=user_request)
 
         raise ValueError("Unsupported entity type")
